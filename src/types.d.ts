@@ -13,4 +13,6 @@ type Newsletter = {
 type Subscriber = {
     newsletterOwnerId: string;
     email: string;
+    source: string;
+    status: string;
 }

@@ -1,11 +1,22 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
+// Define an interface for the Subscriber document
+interface Subscriber extends Document {
+    newsletterOwnerId: string;
+    email: string;
+    source: string;
+    status: string;
+}
 
+// Define the schema
 const subscriberSchema = new mongoose.Schema({
-    newsletterOwnerId: {type: String},
-    email: {type: String}
-}, {timestamps: true});
+    newsletterOwnerId: { type: String, required: true },
+    email: { type: String, required: true },
+    source: { type: String, default: "From website" },
+    status: { type: String, default: "subscribed" },
+}, { timestamps: true });
 
-const Subscriber = mongoose.model<Subscriber>('Subcriber', subscriberSchema);
+// Correct the typo in the model name (changed 'Subcriber' to 'Subscriber')
+const SubscriberModel = mongoose.model<Subscriber>('Subscriber', subscriberSchema);
 
-export default Subscriber;
+export default SubscriberModel;
