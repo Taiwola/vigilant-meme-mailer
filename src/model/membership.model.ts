@@ -9,9 +9,8 @@ export interface IMembership extends Document {
 
 const membershipSchema = new Schema({
   user: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
+    type: String,
+    unique: true
   },
   reference: { type: String, required: true },
   plan: {type: String},

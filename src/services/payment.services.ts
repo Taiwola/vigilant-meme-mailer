@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { createMembership } from './membership.service';
+import { createMembership, findMembership, updateMembership } from './membership.service';
+import { findOneByEmail } from './user.service';
 
 export const verifyPaystackTransaction = async (event: any) => {
   const transactionRef = event.data.identification?.reference;
@@ -28,42 +29,52 @@ export const verifyPaystackTransaction = async (event: any) => {
 
 // paystack webhook handler
 export const handlePaystackWebhook = async (event: PaystackEvent) => {
-  // Validate reference from webhook
-  const transactionRef = event.data.identification?.reference;
-  
-  if (!transactionRef) {
-    console.log("Invalid or missing transaction reference");
-    return;
-  }
-
-  try {
-    // Verify the transaction with Paystack
-    const verify = await verifyPaystackTransaction(event);
+    const transactionRef = event.data.identification?.reference;
     
-    if (!verify.data) {
-      console.log("No data received from Paystack verification");
+    if (!transactionRef) {
+      console.log("Invalid or missing transaction reference");
       return;
     }
-
-    // If the payment is successful, create the membership
-    if (verify.data.status === 'successful') {
-      const membership = await createMembership({
-        user: event.data.email,  // Assuming email is the user identifier
-        reference: verify.data.transactionRef,
-        plan: verify.data.payment_type,  // You can map this to the actual plan name if needed
-        status: verify.data.status,     // Assuming status comes from Paystack verification
-      });
-
-      console.log("Membership created successfully:", membership);
+  
+    try {
+      // Verify the transaction with Paystack
+      const verify = await verifyPaystackTransaction(event);
+      
+      if (!verify.data) {
+        console.log("No data received from Paystack verification");
+        return;
+      }
+  
+      // If the payment is successful
+      if (verify.data.status === 'successful') {
+          // Check if membership already exists
+          const membershipExist = await findMembership(event.data.email as string);
+  
+          if (!membershipExist) {
+              // Create a new membership if it doesn't exist
+              const membership = await createMembership({
+                  user: event.data.email,
+                  reference: verify.data.transactionRef,
+                  plan: verify.data.payment_type,
+                  status: verify.data.status,
+              });
+  
+              console.log("Membership created successfully:", membership);
+          } else {
+              // Update the existing membership if necessary
+              const updatedMembership = await updateMembership(event.data.email as string, {
+                  status: verify.data.status,
+                  reference: verify.data.transactionRef,
+                  plan: verify.data.payment_type,
+              });
+  
+              console.log("Membership updated successfully:", updatedMembership);
+          }
+      } else {
+        console.log("Payment was not successful:", verify.data.status);
+      }
+    } catch (error) {
+      console.error("Error handling Paystack webhook:", error);
     }
-
-    // If the transaction wasn't successful, log it (optional)
-    if (verify.data.status !== 'successful') {
-      console.log("Payment was not successful:", verify.data.status);
-    }
-
-
-  } catch (error) {
-    console.log(error);
-  }
-};
+  };
+  
