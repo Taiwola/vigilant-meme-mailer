@@ -22,7 +22,7 @@ export const sendEmail = async (
     
         mailOptions = {
           from: {
-            name: "Coal City Half Marathon",
+            name: "Seun newsletter",
             address: process.env.MAIL_USERNAME as string,
           },
           to: email,

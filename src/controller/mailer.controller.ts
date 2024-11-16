@@ -7,6 +7,7 @@ export const sendMail = async (req: Request, res: Response) => {
 
     const { Id } = req.params;
     const userId = req.user?.id;
+    const {content} = req.body;
 
     const [newsletter, user] = await Promise.all([
         getOneNewsletter(Id),
@@ -23,9 +24,12 @@ export const sendMail = async (req: Request, res: Response) => {
 
     try {
         const getAllSubscribers = await findAllSubscribers(user._id.toString());
-
+        const mailContent = content || newsletter.content;
+        if (!mailContent) {
+            return res.status(400).json({ message: "Email content is missing" });
+        }
         const emailPromises = getAllSubscribers.map(async (sub) => {
-            const { error, errorMessage } = await sendEmail(sub.email, newsletter.content, newsletter.title);
+            const { error, errorMessage } = await sendEmail(sub.email, mailContent, newsletter.title);
             if (error) throw new Error(errorMessage);
         });
 
