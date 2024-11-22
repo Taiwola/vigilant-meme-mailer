@@ -15,18 +15,21 @@ export const sendMail = async (req: Request, res: Response) => {
     ]);
 
     if (!newsletter) {
-        return res.status(404).json({ message: "Email does not exist, save mail as draft before sending" });
+        res.status(404).json({ message: "Email does not exist, save mail as draft before sending" });
+        return
     }
 
     if (!user) {
-        return res.status(404).json({ message: "User does not exist" });
+        res.status(404).json({ message: "User does not exist" });
+        return;
     }
 
     try {
         const getAllSubscribers = await findAllSubscribers(user._id.toString());
         const mailContent = content || newsletter.content;
         if (!mailContent) {
-            return res.status(400).json({ message: "Email content is missing" });
+            res.status(400).json({ message: "Email content is missing" });
+            return
         }
         const emailPromises = getAllSubscribers.map(async (sub) => {
             const { error, errorMessage } = await sendEmail(sub.email, mailContent, newsletter.title);
@@ -35,10 +38,10 @@ export const sendMail = async (req: Request, res: Response) => {
 
         await Promise.all(emailPromises);
 
-        return res.status(200).json({ message: "Email sent successfully" });
+        res.status(200).json({ message: "Email sent successfully" });
     } catch (error: any) {
         console.error(error);
-        return res.status(500).json({ 
+        res.status(500).json({ 
             message: process.env.NODE_ENV === 'production' ? "Internal server error" : error.message 
         });
     }

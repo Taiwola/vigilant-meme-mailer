@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import path from "path";
 import {AuthRouter} from "./routes/auth.routes"
 import { NewsletterRouter } from "./routes/newsletter.routes";
+import { MailerRoute } from "./routes/mailer.routes";
 
 
 declare global {
@@ -48,6 +49,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use('/api/auth',AuthRouter);
 app.use('/api/newsletter', NewsletterRouter);
+app.use('/api/mail', MailerRoute);
 
 // Database connection
 try {
