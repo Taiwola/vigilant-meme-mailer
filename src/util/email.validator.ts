@@ -74,7 +74,7 @@ const zeroBounceValidator = async (email: string): Promise<boolean> => {
 
 export const validateEmail = async (email: string): Promise<boolean> => {
     if (!isValidEmail(email)) return false;
-    if (!(await isDomainValid(email))) return false;
-    if (!(await validateEmailWithAPI(email))) return false;
+   // if (!(await isDomainValid(email))) return false;
+    //if (!(await validateEmailWithAPI(email))) return false;
     return true;
 };

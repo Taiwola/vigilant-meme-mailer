@@ -8,6 +8,8 @@ import path from "path";
 import {AuthRouter} from "./routes/auth.routes"
 import { NewsletterRouter } from "./routes/newsletter.routes";
 import { MailerRoute } from "./routes/mailer.routes";
+import { SubcriberRoute } from "./routes/subscriber.route";
+import { AnalyticRoute } from "./routes/analytics.route";
 
 
 declare global {
@@ -50,6 +52,8 @@ app.get("/", (req: Request, res: Response) => {
 app.use('/api/auth',AuthRouter);
 app.use('/api/newsletter', NewsletterRouter);
 app.use('/api/mail', MailerRoute);
+app.use('/api/subscriber', SubcriberRoute);
+app.use('/api/analytics', AnalyticRoute);
 
 // Database connection
 try {
