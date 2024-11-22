@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface IMembership extends Document {
     user: mongoose.Schema.Types.ObjectId; // reference to User model

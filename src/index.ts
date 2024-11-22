@@ -5,6 +5,8 @@ import cors from "cors";
 import compression from "compression";
 import mongoose from "mongoose";
 import path from "path";
+import {AuthRouter} from "./routes/auth.routes"
+import { NewsletterRouter } from "./routes/newsletter.routes";
 
 
 declare global {
@@ -22,7 +24,7 @@ declare global {
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Use PORT from environment or default to 3000
+const PORT = process.env.PORT || 5000; // Use PORT from environment or default to 3000
 
 // Middleware
 app.use(helmet()); // Adds security headers
@@ -43,6 +45,9 @@ app.use(
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the Express server!");
 });
+
+app.use('/api/auth',AuthRouter);
+app.use('/api/newsletter', NewsletterRouter);
 
 // Database connection
 try {

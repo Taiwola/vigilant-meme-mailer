@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { createMembership, findMembership, updateMembership } from './membership.service';
-import { findOneByEmail } from './user.service';
 
 export const verifyPaystackTransaction = async (event: any) => {
   const transactionRef = event.data.identification?.reference;

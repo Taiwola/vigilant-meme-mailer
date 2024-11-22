@@ -11,9 +11,10 @@ export const register = async (req: Request, res: Response) => {
     // Check if the user already exists
     const userExist = await findOneByEmail(email);
     if (userExist) {
-      return res.status(400).json({
+      res.status(400).json({
         message: "User already exists",
       });
+      return;
     }
 
     // Hash the password
@@ -32,19 +33,19 @@ export const register = async (req: Request, res: Response) => {
     // Generate JWT token
     const token = jwt.sign(
       { id: createUser._id, email: createUser.email },
-      process.env.SECRET_KEY as string,
+      process.env.JWT_SECRET_KEY as string,
       { expiresIn: "1d" }
     );
 
     // Respond with the created user and token
-    return res.status(201).json({
+    res.status(201).json({
       message: "User created successfully",
       user: createUser,
       token,
     });
   } catch (error) {
     console.error("Error during registration:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -56,30 +57,32 @@ export const login = async (req: Request, res: Response) => {
     // Check if user exists
     const user = await findOneByEmail(email);
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+    res.status(401).json({ message: "Invalid email or password" });
+    return;
     }
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      res.status(401).json({ message: "Invalid email or password" });
+      return;
     }
 
     // Generate JWT token
     const token = jwt.sign(
       { id: user._id, email: user.email },
-      process.env.SECRET_KEY as string,
+      process.env.JWT_SECRET_KEY as string,
       { expiresIn: "1d" }
     );
 
     // Respond with user info and token
-    return res.status(200).json({
+    res.status(200).json({
       message: "Login successful",
       user,
       token,
     });
   } catch (error) {
     console.error("Error during login:", error);
-    return res.status(500).json({ message: "Internal server error" });
+     res.status(500).json({ message: "Internal server error" });
   }
 };
