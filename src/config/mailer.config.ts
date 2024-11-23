@@ -13,12 +13,7 @@ export const transporter = createTransport({
         user: process.env.MAIL_USERNAME,
         pass: process.env.MAIL_PASSWORD,
     },
-    debug: true,
-    logger: true,
 });
-
-console.log("MAIL_USERNAME:", process.env.MAIL_USERNAME);
-console.log("MAIL_PASSWORD:", process.env.MAIL_PASSWORD ? "Loaded" : "Not Loaded");
 
 
 
