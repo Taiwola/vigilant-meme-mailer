@@ -4,7 +4,8 @@ import { verifyTransporter, sendMail } from "../config/mailer.config";
 export const sendEmail = async (
     email: string,
     content: string,
-    title: string
+    title: string,
+    username: string
 ) => {
     let verify: boolean;
     try {
@@ -22,7 +23,7 @@ export const sendEmail = async (
     
         mailOptions = {
           from: {
-            name: "Seun newsletter",
+            name: `${username} Newsletter`,
             address: process.env.MAIL_USERNAME as string,
           },
           to: email,
