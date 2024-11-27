@@ -10,6 +10,8 @@ import { NewsletterRouter } from "./routes/newsletter.routes";
 import { MailerRoute } from "./routes/mailer.routes";
 import { SubcriberRoute } from "./routes/subscriber.route";
 import { AnalyticRoute } from "./routes/analytics.route";
+import { UserRoute } from "./routes/user.routes";
+import { ApiRouter } from "./routes/api.route";
 
 
 declare global {
@@ -54,6 +56,8 @@ app.use('/api/newsletter', NewsletterRouter);
 app.use('/api/mail', MailerRoute);
 app.use('/api/subscriber', SubcriberRoute);
 app.use('/api/analytics', AnalyticRoute);
+app.use('/api/user', UserRoute);
+app.use('/api/', ApiRouter);
 
 // Database connection
 try {
